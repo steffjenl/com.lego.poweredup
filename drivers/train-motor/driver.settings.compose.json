@@ -1,0 +1,25 @@
+[
+  {
+    "id": "port",
+    "type": "dropdown",
+    "value": "1",
+    "label": {
+      "en": "Default port",
+      "nl": "Standaard poort"
+    },
+    "values": [
+      {
+        "id": "1",
+        "label": {
+          "en": "A"
+        }
+      },
+      {
+        "id": "2",
+        "label": {
+          "en": "B"
+        }
+      }
+    ]
+  }
+]
