@@ -55,6 +55,38 @@ class PoweredUpHubDevice extends Device {
             this.log(`set power_port_b to ${this.currentPower} for ${this.getName()}`);
         });
 
+        this.registerCapabilityListener('power_port_c', async (value) => {
+            const portNumber = Buffer.from([0x02]);
+            if (value === 'break') {
+                this.currentPower = 0;
+                await setPower(this.peripheral, portNumber, mapPower(127));
+            } else if (value === 'down') {
+                this.currentPower -= 10;
+                await setPower(this.peripheral, portNumber, mapPower(this.currentPower));
+            } else if (value === 'up') {
+                this.currentPower += 10;
+                await setPower(this.peripheral, portNumber, mapPower(this.currentPower));
+            }
+
+            this.log(`set power_port_c to ${this.currentPower} for ${this.getName()}`);
+        });
+
+        this.registerCapabilityListener('power_port_d', async (value) => {
+            const portNumber = Buffer.from([0x03]);
+            if (value === 'break') {
+                this.currentPower = 0;
+                await setPower(this.peripheral, portNumber, mapPower(127));
+            } else if (value === 'down') {
+                this.currentPower -= 10;
+                await setPower(this.peripheral, portNumber, mapPower(this.currentPower));
+            } else if (value === 'up') {
+                this.currentPower += 10;
+                await setPower(this.peripheral, portNumber, mapPower(this.currentPower));
+            }
+
+            this.log(`set power_port_d to ${this.currentPower} for ${this.getName()}`);
+        });
+
         this.registerCapabilityListener('connect', async (value) => {
             this.log(`connecting to ${this.getName()}`);
             await this.onSync();
@@ -165,6 +197,16 @@ class PoweredUpHubDevice extends Device {
         if (!this.hasCapability('power_port_b')) {
             this.addCapability('power_port_b');
             this.homey.log(`created capability power_port_b for ${this.getName()}`);
+        }
+
+        if (!this.hasCapability('power_port_c')) {
+            this.addCapability('power_port_c');
+            this.homey.log(`created capability power_port_c for ${this.getName()}`);
+        }
+
+        if (!this.hasCapability('power_port_d')) {
+            this.addCapability('power_port_d');
+            this.homey.log(`created capability power_port_d for ${this.getName()}`);
         }
 
         if (!this.hasCapability('connect')) {
