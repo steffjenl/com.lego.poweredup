@@ -1,11 +1,12 @@
 {
   "name": {
-    "en": "Train Motor",
-    "nl": "Trein Motor"
+    "en": "Powered Up Hub",
+    "nl": "Powered Up Hub"
   },
   "class": "button",
   "capabilities": [
-    "power",
+    "power_port_a",
+    "power_port_b",
     "connect"
   ],
   "platforms": [

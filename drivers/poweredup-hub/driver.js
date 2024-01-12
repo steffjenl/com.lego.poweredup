@@ -2,11 +2,11 @@
 
 const { Driver } = require('homey');
 const {
-  BTL_TRAIN_MOTOR_SERVICE_UUID,
-  BTL_TRAIN_MOTOR_BTL_DISCOVER_INTERVAL,
+  BTL_POWERED_UP_HUB_SERVICE_UUID,
+  BTL_POWERED_UP_HUB_BTL_DISCOVER_INTERVAL,
 } = require('../../lib/const');
 
-class TrainMotorDriver extends Driver {
+class PoweredUpHubDriver extends Driver {
 
   /**
    * onInit is called when the driver is initialized.
@@ -14,16 +14,16 @@ class TrainMotorDriver extends Driver {
   async onInit() {
     this.advertisements = {};
     this.onDiscover = this.onDiscover.bind(this);
-    this.onDiscoverInterval = setInterval(this.onDiscover, BTL_TRAIN_MOTOR_BTL_DISCOVER_INTERVAL);
+    this.onDiscoverInterval = setInterval(this.onDiscover, BTL_POWERED_UP_HUB_BTL_DISCOVER_INTERVAL);
     await this.onDiscover();
-    this.log('TrainMotorDriver has been initialized');
+    this.log('PoweredUpHubDriver has been initialized');
   }
 
   async onDiscover() {
     this.log('Discovering...');
-    this.log('looking for service uuid:', BTL_TRAIN_MOTOR_SERVICE_UUID);
+    this.log('looking for service uuid:', BTL_POWERED_UP_HUB_SERVICE_UUID);
 
-    const advertisements = await this.homey.ble.discover([BTL_TRAIN_MOTOR_SERVICE_UUID])
+    const advertisements = await this.homey.ble.discover([BTL_POWERED_UP_HUB_SERVICE_UUID])
       .catch(this.error);
     this.log(`Found ${advertisements.length} devices.`);
     advertisements.forEach((advertisement) => {
@@ -63,4 +63,4 @@ class TrainMotorDriver extends Driver {
 
 }
 
-module.exports = TrainMotorDriver;
+module.exports = PoweredUpHubDriver;
