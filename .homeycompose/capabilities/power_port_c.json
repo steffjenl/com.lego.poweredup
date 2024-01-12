@@ -1,6 +1,6 @@
 {
   "type": "enum",
-  "title": { "en": "Power" },
+  "title": { "en": "Power Port C" },
   "uiComponent": "ternary",
   "getable": true,
   "setable": true,

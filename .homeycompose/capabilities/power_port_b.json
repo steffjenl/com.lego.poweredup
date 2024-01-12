@@ -1,0 +1,30 @@
+{
+  "type": "enum",
+  "title": { "en": "Power Port B" },
+  "uiComponent": "ternary",
+  "getable": true,
+  "setable": true,
+  "values": [
+    {
+      "id": "up",
+      "title": {
+        "en": "Up",
+        "nl": "Omhoog"
+      }
+    },
+    {
+      "id": "break",
+      "title": {
+        "en": "Break",
+        "nl": "Pauze"
+      }
+    },
+    {
+      "id": "down",
+      "title": {
+        "en": "Down",
+        "nl": "Omlaag"
+      }
+    }
+  ]
+}

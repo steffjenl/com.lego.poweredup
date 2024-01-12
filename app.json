@@ -31,12 +31,13 @@
   "drivers": [
     {
       "name": {
-        "en": "Train Motor",
-        "nl": "Trein Motor"
+        "en": "Powered Up Hub",
+        "nl": "Powered Up Hub"
       },
       "class": "button",
       "capabilities": [
-        "power",
+        "power_port_a",
+        "power_port_b",
         "connect"
       ],
       "platforms": [
@@ -62,11 +63,11 @@
         }
       ],
       "images": {
-        "small": "/drivers/train-motor/assets/images/small.png",
-        "large": "/drivers/train-motor/assets/images/large.png",
-        "xlarge": "/drivers/train-motor/assets/images/xlarge.png"
+        "small": "/drivers/poweredup-hub/assets/images/small.png",
+        "large": "/drivers/poweredup-hub/assets/images/large.png",
+        "xlarge": "/drivers/poweredup-hub/assets/images/xlarge.png"
       },
-      "id": "train-motor",
+      "id": "poweredup-hub",
       "settings": [
         {
           "id": "port",
@@ -105,10 +106,106 @@
       "uiComponent": "button",
       "uiQuickAction": true
     },
-    "power": {
+    "power_port_a": {
       "type": "enum",
       "title": {
-        "en": "Power"
+        "en": "Power Port A"
+      },
+      "uiComponent": "ternary",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "up",
+          "title": {
+            "en": "Up",
+            "nl": "Omhoog"
+          }
+        },
+        {
+          "id": "break",
+          "title": {
+            "en": "Break",
+            "nl": "Pauze"
+          }
+        },
+        {
+          "id": "down",
+          "title": {
+            "en": "Down",
+            "nl": "Omlaag"
+          }
+        }
+      ]
+    },
+    "power_port_b": {
+      "type": "enum",
+      "title": {
+        "en": "Power Port B"
+      },
+      "uiComponent": "ternary",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "up",
+          "title": {
+            "en": "Up",
+            "nl": "Omhoog"
+          }
+        },
+        {
+          "id": "break",
+          "title": {
+            "en": "Break",
+            "nl": "Pauze"
+          }
+        },
+        {
+          "id": "down",
+          "title": {
+            "en": "Down",
+            "nl": "Omlaag"
+          }
+        }
+      ]
+    },
+    "power_port_c": {
+      "type": "enum",
+      "title": {
+        "en": "Power Port C"
+      },
+      "uiComponent": "ternary",
+      "getable": true,
+      "setable": true,
+      "values": [
+        {
+          "id": "up",
+          "title": {
+            "en": "Up",
+            "nl": "Omhoog"
+          }
+        },
+        {
+          "id": "break",
+          "title": {
+            "en": "Break",
+            "nl": "Pauze"
+          }
+        },
+        {
+          "id": "down",
+          "title": {
+            "en": "Down",
+            "nl": "Omlaag"
+          }
+        }
+      ]
+    },
+    "power_port_d": {
+      "type": "enum",
+      "title": {
+        "en": "Power Port D"
       },
       "uiComponent": "ternary",
       "getable": true,
