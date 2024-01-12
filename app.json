@@ -24,6 +24,7 @@
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
   },
+  "brandColor": "#00a4dc",
   "author": {
     "name": "Stèphan Eizinga",
     "email": "stephan@monkeysoft.nl"
@@ -38,6 +39,8 @@
       "capabilities": [
         "power_port_a",
         "power_port_b",
+        "power_port_c",
+        "power_port_d",
         "connect"
       ],
       "platforms": [
