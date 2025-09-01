@@ -2,6 +2,8 @@
   "id": "com.lego.poweredup",
   "version": "1.0.0",
   "compatibility": ">=5.0.0",
+  "color": "#ff0000",
+  "brandColor": "#ff0000",
   "sdk": 3,
   "platforms": [
     "local"
