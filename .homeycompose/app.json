@@ -26,5 +26,25 @@
   "author": {
     "name": "Stèphan Eizinga",
     "email": "stephan@monkeysoft.nl"
-  }
+  },
+  "contributors": {
+    "developers": [
+      {
+        "name": "Stèphan Eizinga",
+        "email": "stephan@monkeysoft.nl"
+      }
+    ]
+  },
+  "contributing": {
+    "donate": {
+      "paypal": {
+        "username": "steffjenl"
+      }
+    }
+  },
+  "bugs": {
+    "url": "https://github.com/steffjenl/com-gugutab-tvoverlay/issues"
+  },
+  "support": "https://monkeysoft.nl/homey-integrations-support/",
+  "homeyCommunityTopicId": 142476
 }

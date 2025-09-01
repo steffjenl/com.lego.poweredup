@@ -24,7 +24,6 @@
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
   },
-  "brandColor": "#00a4dc",
   "author": {
     "name": "Stèphan Eizinga",
     "email": "stephan@monkeysoft.nl"
