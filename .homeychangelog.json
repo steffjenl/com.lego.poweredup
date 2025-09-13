@@ -1,5 +1,8 @@
 {
   "1.0.1": {
     "en": "Add new assets"
+  },
+  "1.0.2": {
+    "en": "Change brandColor and make first official release"
   }
 }
