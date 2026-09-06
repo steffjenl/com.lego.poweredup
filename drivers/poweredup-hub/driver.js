@@ -24,7 +24,10 @@ class PoweredUpHubDriver extends Driver {
     this.log('looking for service uuid:', BTL_POWERED_UP_HUB_SERVICE_UUID);
 
     const advertisements = await this.homey.ble.discover([BTL_POWERED_UP_HUB_SERVICE_UUID])
-      .catch(this.error);
+      .catch((error) => {
+        this.error(error);
+        return [];
+      });
     this.log(`Found ${advertisements.length} devices.`);
     advertisements.forEach((advertisement) => {
       if (!this.advertisements[advertisement.address]) {

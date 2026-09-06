@@ -1,0 +1,20 @@
+# Bug backlog
+
+Priority: P1 = breaks core functionality, P2 = real but limited-impact defect, P3 = dead code / cosmetic.
+
+## Fixed
+
+- [x] **P1 — Connection never detected as dropped, so it never reconnects.** `device.js` `onSync` set `this.peripheral` once and never cleared it when the BLE link actually died; there was no `disconnect` listener and no liveness check, so the periodic sync silently did nothing for reconnection after the first successful connect. This was the root cause of hubs becoming permanently unreachable until the device was manually removed/re-paired. Fixed by replacing `onSync` with `ensureConnected()`, which reconnects the existing peripheral (`peripheral.connect()`) when `isConnected` is false, probes liveness via `updateRssi()` when connected, listens for `disconnect` as a fast path, and runs every minute instead of every 10.
+- [x] **P2 — `driver.js` discovery loop could throw inside `setInterval`.** `homey.ble.discover(...).catch(this.error)` returned `undefined` on error, but the next line unconditionally read `.length` off it. Fixed to return `[]` on error.
+- [x] **P2 — `onDeleted()` had an inverted condition.** `if (!this.peripheral || this.peripheral.isConnected)` entered the block (and called `.disconnect()` on a falsy value, throwing) exactly when there was *no* peripheral. Fixed to `if (this.peripheral && this.peripheral.isConnected)`.
+- [x] **P2 — Sync/connection failures were invisible to the user.** `setUnavailable(error.message)` was commented out in the old `onSync`, so a hub that couldn't be reached showed no error state in the Homey UI. Now called on every failed `ensureConnected()` attempt.
+- [x] **P3 — No cleanup on app restart.** There was no `onUninit()`; a live BLE connection could be left dangling on the hub side across app restarts. Added, disconnects the peripheral and clears the interval.
+
+## Open
+
+- [ ] **P2 — `lib/poweredup.js` `setPower()` re-discovers services/characteristics on every single call**, and writes the same message to *every* characteristic found on the service instead of the one known LEGO characteristic (`BTL_POWERED_UP_HUB_CHARACTERISTIC_UUID` in `lib/const.js` is defined but never used). This adds latency and an extra GATT round trip — and thus an extra failure point — to every motor command. Fix: cache the discovered characteristic per peripheral (e.g. on connect, alongside `ensureConnected()`) and write to it directly.
+- [ ] **P3 — Dead `port` device setting.** `driver.settings.compose.json` exposes a "Default port" setting, and `device.js`'s `getDefaultPort()` reads it, but `getDefaultPort()` is never called anywhere — the setting has no effect. Either wire it up (e.g. for a future generic "run motor" flow action) or remove the setting and method.
+- [ ] **P3 — Dead capabilities `power_port_c` / `power_port_d`.** Defined in `.homeycompose/capabilities/` but never added to `driver.compose.json` or referenced in `device.js`. Related to the "support more ports" feature below — either implement or remove.
+- [ ] **P3 — `locales/en.json` is empty (`{}`).** All UI strings are inlined directly in the compose JSON files instead, so the locale file serves no purpose as-is and the app has no real localization structure (only ad hoc inline `en`/`nl` pairs).
+- [ ] **P3 — Driver images referenced but missing on disk.** `driver.compose.json` (and generated `app.json`) reference `{{driverAssetsPath}}/images/{small,large,xlarge}.png`, but `drivers/poweredup-hub/assets/images/` doesn't exist. Worth confirming the app still builds/publishes correctly, or add the missing images.
+- [ ] **P3 — `currentPower` is only local device state**, never read back from the hub. After an app restart, the tracked value resets to `0` while the physical motor may still be running at its last commanded power, so the first `up`/`down` tap will jump from the wrong baseline.

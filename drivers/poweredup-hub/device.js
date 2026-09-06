@@ -4,7 +4,7 @@
 
 const {Device} = require('homey');
 const {
-    BTL_POWERED_UP_HUB_SYNC_INTERVAL,
+    BTL_POWERED_UP_HUB_HEALTHCHECK_INTERVAL,
 } = require('../../lib/const');
 const {mapPower} = require('../../lib/utils');
 const {setPower} = require('../../lib/poweredup');
@@ -15,11 +15,12 @@ class PoweredUpHubDevice extends Device {
      * onInit is called when the device is initialized.
      */
     async onInit() {
-        this.setAvailable()
-            .catch(this.error);
-        this.onSync = this.onSync.bind(this);
-        this.onSyncInterval = setInterval(this.onSync, BTL_POWERED_UP_HUB_SYNC_INTERVAL);
-        this.onSync();// do an initial sync
+        this.advertisement = null;
+        this.peripheral = null;
+
+        this.ensureConnected = this.ensureConnected.bind(this);
+        this.onSyncInterval = setInterval(this.ensureConnected, BTL_POWERED_UP_HUB_HEALTHCHECK_INTERVAL);
+        this.ensureConnected();// do an initial connect
 
         this.currentPower = 0;
 
@@ -57,7 +58,7 @@ class PoweredUpHubDevice extends Device {
 
         this.registerCapabilityListener('connect', async (value) => {
             this.log(`connecting to ${this.getName()}`);
-            await this.onSync();
+            await this.ensureConnected();
         });
 
         await this._createMissingCapabilities();
@@ -98,12 +99,27 @@ class PoweredUpHubDevice extends Device {
     }
 
     /**
+     * onUninit is called when the app is shutting down/restarting.
+     */
+    async onUninit() {
+        if (this.onSyncInterval) {
+            clearInterval(this.onSyncInterval);
+        }
+        if (this.peripheral && this.peripheral.isConnected) {
+            await this.peripheral.disconnect().catch(this.error);
+        }
+    }
+
+    /**
      * onDeleted is called when the user deleted the device.
      */
     async onDeleted() {
-        if (!this.peripheral || this.peripheral.isConnected) {
+        if (this.onSyncInterval) {
+            clearInterval(this.onSyncInterval);
+        }
+        if (this.peripheral && this.peripheral.isConnected) {
             try {
-                this.peripheral.disconnect();
+                await this.peripheral.disconnect();
             } catch (error) {
                 this.error(error);
             }
@@ -112,15 +128,11 @@ class PoweredUpHubDevice extends Device {
     }
 
     /**
-     *  Sync the device
+     * Make sure the device has a live BLE connection, reconnecting if it was
+     * lost. Called on an interval, on app init, and via the 'connect' capability.
      * @returns {Promise<void>}
      */
-    async onSync() {
-        this.log('Syncing...');
-
-        this.setAvailable()
-            .catch(this.error);
-
+    async ensureConnected() {
         const {uuid} = this.getData();
 
         try {
@@ -128,21 +140,27 @@ class PoweredUpHubDevice extends Device {
                 this.advertisement = await this.homey.ble.find(uuid);
                 this.log(`Device ${this.advertisement.localName} found!`);
             }
-            if (this.advertisement && !this.peripheral) {
-                this.peripheral = this.advertisement.connect()
-                    .then((peripheral) => {
-                        this.log('Connected to peripheral');
-                        this.peripheral = peripheral;
-                        return peripheral;
-                    })
-                    .catch((error) => {
-                        this.error(`Can not connect to peripheral ${this.advertisement.localName}`);
-                        return null;
-                    });
+
+            if (!this.peripheral) {
+                this.peripheral = await this.advertisement.connect();
+                this.peripheral.on('disconnect', () => {
+                    this.log('Peripheral disconnected');
+                    this.setUnavailable('Disconnected from hub').catch(this.error);
+                    this.ensureConnected().catch(this.error);
+                });
+                this.log('Connected to peripheral');
+            } else if (!this.peripheral.isConnected) {
+                await this.peripheral.connect();
+                this.log('Reconnected to peripheral');
+            } else {
+                await this.peripheral.updateRssi();
             }
+
+            await this.setAvailable().catch(this.error);
         } catch (error) {
-            this.error(error);
-            // await this.setUnavailable(error.message);
+            this.error(`Sync failed: ${error.message}`);
+            this.advertisement = null;
+            await this.setUnavailable(error.message).catch(this.error);
         }
     }
 
