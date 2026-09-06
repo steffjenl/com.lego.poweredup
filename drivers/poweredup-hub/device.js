@@ -191,21 +191,6 @@ class PoweredUpHubDevice extends Device {
         }
     }
 
-    /**
-     * Get the default port
-     * @returns {Promise<Buffer>}
-     */
-    async getDefaultPort() {
-        const settings = this.getSettings();
-        if (settings.port === '1' || settings.port === 1) {
-            return Buffer.from([0x00]);
-        }
-        if (settings.port === '2' || settings.port === 2) {
-            return Buffer.from([0x01]);
-        }
-        return Buffer.from([0x00]);
-    }
-
 }
 
 module.exports = PoweredUpHubDevice;

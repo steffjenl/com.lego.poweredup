@@ -67,32 +67,7 @@
         "large": "/drivers/poweredup-hub/assets/images/large.png",
         "xlarge": "/drivers/poweredup-hub/assets/images/xlarge.png"
       },
-      "id": "poweredup-hub",
-      "settings": [
-        {
-          "id": "port",
-          "type": "dropdown",
-          "value": "1",
-          "label": {
-            "en": "Default port",
-            "nl": "Standaard poort"
-          },
-          "values": [
-            {
-              "id": "1",
-              "label": {
-                "en": "A"
-              }
-            },
-            {
-              "id": "2",
-              "label": {
-                "en": "B"
-              }
-            }
-          ]
-        }
-      ]
+      "id": "poweredup-hub"
     }
   ],
   "capabilities": {
@@ -142,70 +117,6 @@
       "type": "enum",
       "title": {
         "en": "Power Port B"
-      },
-      "uiComponent": "ternary",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "up",
-          "title": {
-            "en": "Up",
-            "nl": "Omhoog"
-          }
-        },
-        {
-          "id": "break",
-          "title": {
-            "en": "Break",
-            "nl": "Pauze"
-          }
-        },
-        {
-          "id": "down",
-          "title": {
-            "en": "Down",
-            "nl": "Omlaag"
-          }
-        }
-      ]
-    },
-    "power_port_c": {
-      "type": "enum",
-      "title": {
-        "en": "Power Port C"
-      },
-      "uiComponent": "ternary",
-      "getable": true,
-      "setable": true,
-      "values": [
-        {
-          "id": "up",
-          "title": {
-            "en": "Up",
-            "nl": "Omhoog"
-          }
-        },
-        {
-          "id": "break",
-          "title": {
-            "en": "Break",
-            "nl": "Pauze"
-          }
-        },
-        {
-          "id": "down",
-          "title": {
-            "en": "Down",
-            "nl": "Omlaag"
-          }
-        }
-      ]
-    },
-    "power_port_d": {
-      "type": "enum",
-      "title": {
-        "en": "Power Port D"
       },
       "uiComponent": "ternary",
       "getable": true,
