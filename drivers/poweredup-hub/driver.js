@@ -16,7 +16,36 @@ class PoweredUpHubDriver extends Driver {
     this.onDiscover = this.onDiscover.bind(this);
     this.onDiscoverInterval = setInterval(this.onDiscover, BTL_POWERED_UP_HUB_BTL_DISCOVER_INTERVAL);
     await this.onDiscover();
+    this._registerFlowCards();
     this.log('PoweredUpHubDriver has been initialized');
+  }
+
+  /**
+   * Register Flow action/condition run listeners. Device trigger cards
+   * (hub_connected/hub_disconnected) don't need a run listener - devices
+   * trigger them directly.
+   * @private
+   */
+  _registerFlowCards() {
+    this.homey.flow.getActionCard('set_power')
+      .registerRunListener(async (args) => {
+        await args.device.setPortPower(args.port, args.power);
+      });
+
+    this.homey.flow.getActionCard('run_for_duration')
+      .registerRunListener(async (args) => {
+        await args.device.setPortPower(args.port, args.power);
+        await new Promise((resolve) => setTimeout(resolve, args.duration * 1000));
+        await args.device.brakePort(args.port);
+      });
+
+    this.homey.flow.getActionCard('brake')
+      .registerRunListener(async (args) => {
+        await args.device.brakePort(args.port);
+      });
+
+    this.homey.flow.getConditionCard('hub_is_connected')
+      .registerRunListener(async (args) => Boolean(args.device.isConnected));
   }
 
   async onDiscover() {

@@ -4,25 +4,26 @@ Priority reflects value toward the main use case: reliable, unattended automatio
 
 ## P1 — Automation (Flow cards)
 
-None exist today — no `driver.flow.compose.json`, no `flow` section anywhere. Needed for any Homey Flow use case:
+- [x] **Action: run motor for a duration** — `run_for_duration` (port, power %, duration in seconds; sets power, waits, then brakes). Direct enabler for "let the train drive automatically".
+- [x] **Action: set motor power** — `set_power` (port, absolute power -100..100%).
+- [x] **Action: brake / stop** — `brake` (port).
+- [x] **Trigger: hub connected** / **Trigger: hub disconnected** — `hub_connected`/`hub_disconnected`, fired on actual connection-state transitions (see `device.js` `_setConnectedState`).
+- [x] **Condition: hub is connected** — `hub_is_connected`.
 
-- [ ] **Action: run motor for a duration** — e.g. "set port A to 60% for 30 seconds, then stop". This is the direct enabler for "let the train drive automatically" (e.g. a time-based Flow trigger → this action), without needing a `break` action wired in separately.
-- [ ] **Action: set motor power** — absolute power/direction, not just the existing relative up/down/brake buttons, so a Flow can set an exact known speed.
-- [ ] **Action: brake / stop**.
-- [ ] **Trigger: hub connected** / **Trigger: hub disconnected** — lets a Flow react to connection loss (e.g. push a notification), which directly addresses the "I want to know when it drops" side of the reliability complaint.
-- [ ] **Condition: hub is connected** — so a Flow can guard other actions on connection state.
+Defined in `drivers/poweredup-hub/driver.flow.compose.json`, run listeners registered in `driver.js`. Not verified against a real hub/the Homey Flow editor in this environment — see `SPEC.md`/this repo's dev notes for the manual check to run.
 
 ## P2 — Device/driver coverage
 
-- [ ] **Support additional Powered Up hub types** (Move Hub, Technic Hub, City Hub, Train Hub, Remote Control) as distinct drivers or a capability-driven single driver, since they differ in available ports and sensors. Today everything pairs as one generic "Powered Up Hub".
-- [ ] **Activate ports C and D** (capabilities already exist in `.homeycompose/capabilities/` but are dead — see `BUGS.md`) for hubs that expose more than 2 motor ports (e.g. Technic Hub).
-- [ ] **Sensor support**: tilt sensor (Move Hub), color/distance sensor, battery level — exposed over the same LEGO Wireless Protocol, currently not read at all.
-- [ ] **Connection status capability** (e.g. a read-only indicator, not just the existing manual `connect` button) so connection state is visible directly on the device tile, not only via available/unavailable.
+- [x] **Connection status capability** — new `connected` read-only capability (`.homeycompose/capabilities/connected.json`), updated on every connection-state transition.
+- [ ] **Support additional Powered Up hub types** (Move Hub, Technic Hub, City Hub, Train Hub, Remote Control) as distinct drivers or a capability-driven single driver, since they differ in available ports and sensors. Today everything pairs as one generic "Powered Up Hub". **Deferred**: needs the LEGO "Hub Attached I/O" protocol messages (hub/port type identification) decoded correctly per hub — not safe to hand-write without a real hub to verify against.
+- [ ] **Activate ports C and D** for hubs that expose more than 2 motor ports (e.g. Technic Hub). **Deferred**: depends on the hub-type detection above, so a device knows whether it actually has a port C/D before exposing controls for it.
+- [ ] **Sensor support**: tilt sensor (Move Hub), color/distance sensor, battery level — exposed over the same LEGO Wireless Protocol via port-mode subscription messages, currently not read at all. **Deferred**: same reason — needs real-hardware verification of the mode/value decoding per sensor type before shipping.
 
 ## P3 — Polish
 
-- [ ] Real README with setup/usage instructions (current one is a one-line placeholder).
-- [ ] CHANGELOG.md.
-- [ ] Basic test coverage (none exists today — e.g. unit tests for `mapPower`/`setPower` message construction, which don't require live hardware).
-- [ ] CI (lint on PR at minimum — no CI config exists today).
-- [ ] Resolve the dead `port` setting / `power_port_c` / `power_port_d` cleanup items from `BUGS.md` as part of the multi-port work above, rather than separately.
+- [x] Real README with setup/usage instructions.
+- [x] CHANGELOG.md.
+- [x] Basic test coverage — `npm test` (Node's built-in test runner, zero extra dependencies): `mapPower` and `setPower()`'s message construction/characteristic caching, all without live hardware.
+- [x] CI — `.github/workflows/ci.yml` runs lint + tests on push/PR.
+- [x] Resolve the dead `port` setting / `power_port_c` / `power_port_d` cleanup items — done in `BUGS.md`.
+- [ ] `locales/en.json` is still empty — see `BUGS.md` open items.

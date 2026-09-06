@@ -9,6 +9,11 @@ const {
 const {mapPower} = require('../../lib/utils');
 const {setPower} = require('../../lib/poweredup');
 
+const PORT_BYTES = {
+    a: Buffer.from([0x00]),
+    b: Buffer.from([0x01]),
+};
+
 class PoweredUpHubDevice extends Device {
 
     /**
@@ -17,43 +22,36 @@ class PoweredUpHubDevice extends Device {
     async onInit() {
         this.advertisement = null;
         this.peripheral = null;
+        this.isConnected = false;
 
         this.ensureConnected = this.ensureConnected.bind(this);
         this.onSyncInterval = setInterval(this.ensureConnected, BTL_POWERED_UP_HUB_HEALTHCHECK_INTERVAL);
         this.ensureConnected();// do an initial connect
 
-        this.currentPower = 0;
+        this.currentPower = {a: 0, b: 0};
 
         this.registerCapabilityListener('power_port_a', async (value) => {
-            const portNumber = Buffer.from([0x00]);
             if (value === 'break') {
-                this.currentPower = 0;
-                await setPower(this.peripheral, portNumber, mapPower(127));
+                await this.brakePort('a');
             } else if (value === 'down') {
-                this.currentPower -= 10;
-                await setPower(this.peripheral, portNumber, mapPower(this.currentPower));
+                await this.setPortPower('a', this.currentPower.a - 10);
             } else if (value === 'up') {
-                this.currentPower += 10;
-                await setPower(this.peripheral, portNumber, mapPower(this.currentPower));
+                await this.setPortPower('a', this.currentPower.a + 10);
             }
 
-            this.log(`set power_port_a to ${this.currentPower} for ${this.getName()}`);
+            this.log(`set power_port_a to ${this.currentPower.a} for ${this.getName()}`);
         });
 
         this.registerCapabilityListener('power_port_b', async (value) => {
-            const portNumber = Buffer.from([0x01]);
             if (value === 'break') {
-                this.currentPower = 0;
-                await setPower(this.peripheral, portNumber, mapPower(127));
+                await this.brakePort('b');
             } else if (value === 'down') {
-                this.currentPower -= 10;
-                await setPower(this.peripheral, portNumber, mapPower(this.currentPower));
+                await this.setPortPower('b', this.currentPower.b - 10);
             } else if (value === 'up') {
-                this.currentPower += 10;
-                await setPower(this.peripheral, portNumber, mapPower(this.currentPower));
+                await this.setPortPower('b', this.currentPower.b + 10);
             }
 
-            this.log(`set power_port_b to ${this.currentPower} for ${this.getName()}`);
+            this.log(`set power_port_b to ${this.currentPower.b} for ${this.getName()}`);
         });
 
         this.registerCapabilityListener('connect', async (value) => {
@@ -128,6 +126,27 @@ class PoweredUpHubDevice extends Device {
     }
 
     /**
+     * Set the absolute power on a port (-100..100), tracking it per port.
+     * @param {'a'|'b'} portKey
+     * @param {number} power
+     * @returns {Promise<void>}
+     */
+    async setPortPower(portKey, power) {
+        this.currentPower[portKey] = mapPower(Math.round(power));
+        await setPower(this.peripheral, PORT_BYTES[portKey], this.currentPower[portKey]);
+    }
+
+    /**
+     * Brake (stop) a port.
+     * @param {'a'|'b'} portKey
+     * @returns {Promise<void>}
+     */
+    async brakePort(portKey) {
+        this.currentPower[portKey] = 0;
+        await setPower(this.peripheral, PORT_BYTES[portKey], mapPower(127));
+    }
+
+    /**
      * Make sure the device has a live BLE connection, reconnecting if it was
      * lost. Called on an interval, on app init, and via the 'connect' capability.
      * @returns {Promise<void>}
@@ -157,11 +176,34 @@ class PoweredUpHubDevice extends Device {
             }
 
             await this.setAvailable().catch(this.error);
+            await this._setConnectedState(true);
         } catch (error) {
             this.error(`Sync failed: ${error.message}`);
             this.advertisement = null;
             await this.setUnavailable(error.message).catch(this.error);
+            await this._setConnectedState(false);
         }
+    }
+
+    /**
+     * Update the 'connected' capability and fire the hub_connected/hub_disconnected
+     * flow triggers, but only on an actual state transition.
+     * @param {boolean} connected
+     * @returns {Promise<void>}
+     * @private
+     */
+    async _setConnectedState(connected) {
+        if (this.isConnected === connected) {
+            return;
+        }
+        this.isConnected = connected;
+
+        if (this.hasCapability('connected')) {
+            await this.setCapabilityValue('connected', connected).catch(this.error);
+        }
+
+        const triggerId = connected ? 'hub_connected' : 'hub_disconnected';
+        await this.homey.flow.getDeviceTriggerCard(triggerId).trigger(this).catch(this.error);
     }
 
     /**
@@ -188,6 +230,11 @@ class PoweredUpHubDevice extends Device {
         if (!this.hasCapability('connect')) {
             this.addCapability('connect');
             this.homey.log(`created capability connect for ${this.getName()}`);
+        }
+
+        if (!this.hasCapability('connected')) {
+            this.addCapability('connected');
+            this.homey.log(`created capability connected for ${this.getName()}`);
         }
     }
 

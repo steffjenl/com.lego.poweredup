@@ -1,0 +1,183 @@
+{
+  "triggers": [
+    {
+      "id": "hub_connected",
+      "title": {
+        "en": "Hub connected",
+        "nl": "Hub verbonden"
+      },
+      "hint": {
+        "en": "Triggers when the hub's Bluetooth connection is (re)established.",
+        "nl": "Wordt geactiveerd zodra de Bluetooth-verbinding met de hub (opnieuw) tot stand komt."
+      }
+    },
+    {
+      "id": "hub_disconnected",
+      "title": {
+        "en": "Hub disconnected",
+        "nl": "Hub niet meer verbonden"
+      },
+      "hint": {
+        "en": "Triggers when the hub's Bluetooth connection is lost.",
+        "nl": "Wordt geactiveerd zodra de Bluetooth-verbinding met de hub wegvalt."
+      }
+    }
+  ],
+  "conditions": [
+    {
+      "id": "hub_is_connected",
+      "title": {
+        "en": "Hub !{{is|isn't}} connected",
+        "nl": "Hub !{{is|is niet}} verbonden"
+      }
+    }
+  ],
+  "actions": [
+    {
+      "id": "set_power",
+      "title": {
+        "en": "Set power",
+        "nl": "Stel vermogen in"
+      },
+      "titleFormatted": {
+        "en": "Set power on port [[port]] to [[power]]%",
+        "nl": "Stel vermogen op poort [[port]] in op [[power]]%"
+      },
+      "args": [
+        {
+          "type": "dropdown",
+          "name": "port",
+          "title": {
+            "en": "Port",
+            "nl": "Poort"
+          },
+          "values": [
+            {
+              "id": "a",
+              "title": {
+                "en": "A",
+                "nl": "A"
+              }
+            },
+            {
+              "id": "b",
+              "title": {
+                "en": "B",
+                "nl": "B"
+              }
+            }
+          ]
+        },
+        {
+          "type": "range",
+          "name": "power",
+          "title": {
+            "en": "Power",
+            "nl": "Vermogen"
+          },
+          "min": -100,
+          "max": 100,
+          "step": 1,
+          "label": "%"
+        }
+      ]
+    },
+    {
+      "id": "run_for_duration",
+      "title": {
+        "en": "Run for a duration",
+        "nl": "Laat rijden voor een bepaalde tijd"
+      },
+      "titleFormatted": {
+        "en": "Run port [[port]] at [[power]]% for [[duration]] seconds, then brake",
+        "nl": "Laat poort [[port]] [[duration]] seconden op [[power]]% draaien en rem daarna af"
+      },
+      "args": [
+        {
+          "type": "dropdown",
+          "name": "port",
+          "title": {
+            "en": "Port",
+            "nl": "Poort"
+          },
+          "values": [
+            {
+              "id": "a",
+              "title": {
+                "en": "A",
+                "nl": "A"
+              }
+            },
+            {
+              "id": "b",
+              "title": {
+                "en": "B",
+                "nl": "B"
+              }
+            }
+          ]
+        },
+        {
+          "type": "range",
+          "name": "power",
+          "title": {
+            "en": "Power",
+            "nl": "Vermogen"
+          },
+          "min": -100,
+          "max": 100,
+          "step": 1,
+          "label": "%"
+        },
+        {
+          "type": "number",
+          "name": "duration",
+          "title": {
+            "en": "Duration (seconds)",
+            "nl": "Duur (seconden)"
+          },
+          "min": 1,
+          "max": 3600,
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "brake",
+      "title": {
+        "en": "Brake",
+        "nl": "Afremmen"
+      },
+      "titleFormatted": {
+        "en": "Brake port [[port]]",
+        "nl": "Rem poort [[port]] af"
+      },
+      "args": [
+        {
+          "type": "dropdown",
+          "name": "port",
+          "title": {
+            "en": "Port",
+            "nl": "Poort"
+          },
+          "values": [
+            {
+              "id": "a",
+              "title": {
+                "en": "A",
+                "nl": "A"
+              }
+            },
+            {
+              "id": "b",
+              "title": {
+                "en": "B",
+                "nl": "B"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
