@@ -10,8 +10,9 @@
     "en": "Lego Powered UP"
   },
   "description": {
-    "en": "Lego Powered UP Control"
+    "en": "Powered UP, powered by Homey."
   },
+  "brandColor": "#D01012",
   "category": [
     "appliances"
   ],

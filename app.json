@@ -11,8 +11,9 @@
     "en": "Lego Powered UP"
   },
   "description": {
-    "en": "Lego Powered UP Control"
+    "en": "Powered UP, powered by Homey."
   },
+  "brandColor": "#D01012",
   "category": [
     "appliances"
   ],
@@ -28,49 +29,6 @@
     "name": "Stèphan Eizinga",
     "email": "stephan@monkeysoft.nl"
   },
-  "drivers": [
-    {
-      "name": {
-        "en": "Powered Up Hub",
-        "nl": "Powered Up Hub"
-      },
-      "class": "button",
-      "capabilities": [
-        "power_port_a",
-        "power_port_b",
-        "connect",
-        "connected"
-      ],
-      "platforms": [
-        "local"
-      ],
-      "connectivity": [
-        "ble"
-      ],
-      "pair": [
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_devices"
-          },
-          "options": {
-            "singular": true
-          }
-        },
-        {
-          "id": "add_devices",
-          "template": "add_devices"
-        }
-      ],
-      "images": {
-        "small": "/drivers/poweredup-hub/assets/images/small.png",
-        "large": "/drivers/poweredup-hub/assets/images/large.png",
-        "xlarge": "/drivers/poweredup-hub/assets/images/xlarge.png"
-      },
-      "id": "poweredup-hub"
-    }
-  ],
   "flow": {
     "triggers": [
       {
@@ -290,6 +248,49 @@
       }
     ]
   },
+  "drivers": [
+    {
+      "name": {
+        "en": "Powered Up Hub",
+        "nl": "Powered Up Hub"
+      },
+      "class": "button",
+      "capabilities": [
+        "power_port_a",
+        "power_port_b",
+        "connect",
+        "connected"
+      ],
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "ble"
+      ],
+      "pair": [
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          },
+          "options": {
+            "singular": true
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "images": {
+        "small": "/drivers/poweredup-hub/assets/images/small.png",
+        "large": "/drivers/poweredup-hub/assets/images/large.png",
+        "xlarge": "/drivers/poweredup-hub/assets/images/xlarge.png"
+      },
+      "id": "poweredup-hub"
+    }
+  ],
   "capabilities": {
     "connect": {
       "type": "boolean",

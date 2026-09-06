@@ -1,1 +1,1 @@
-Lego Powered UP Control
+Bring your LEGO Powered UP hubs into Homey and control your trains and motorized models right alongside the rest of your smart home. Once a hub is paired it stays connected automatically, so your Flows keep working reliably — whether that's a train that starts on a schedule or a notification the moment a motor stops.
