@@ -1,5 +1,8 @@
 {
   "1.0.1": {
     "en": "Update NodeJS packages and add some nice new features"
+  },
+  "1.0.3": {
+    "en": "Fix some issues"
   }
 }
